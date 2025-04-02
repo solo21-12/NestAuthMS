@@ -1,11 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, BadRequestException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import {
-  AUTH_SERVICES_PATTERNS,
-  CreateAuthServiceDto,
-  UpdateAuthServiceDto,
-} from '@app/contracts';
+import { AUTH_SERVICES_PATTERNS, SignInDto, SignUpDto } from '@app/contracts';
 import { AUTH_SERVICES_CONSTANTS } from 'libs/constants';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class AuthServiceService {
@@ -13,29 +10,42 @@ export class AuthServiceService {
     @Inject(AUTH_SERVICES_CONSTANTS.NAME)
     private readonly authServiceClient: ClientProxy,
   ) {}
-  create(createAuthServiceDto: CreateAuthServiceDto) {
-    return this.authServiceClient.send(
-      AUTH_SERVICES_PATTERNS.CREATE,
-      createAuthServiceDto,
-    );
+
+  async signUp(SignUpDto: SignUpDto) {
+    try {
+      const response$ = this.authServiceClient.send(
+        AUTH_SERVICES_PATTERNS.SIGNUP,
+        SignUpDto,
+      );
+
+      return await lastValueFrom(response$).catch((error) => {
+        console.error('API Gateway Sign-up Error:', error);
+
+        // Ensure we return an HTTP-friendly error message
+        throw new BadRequestException(error.message || 'Sign-up failed');
+      });
+    } catch (error) {
+      console.error('API Gateway Sign-up Error:', error);
+      throw new BadRequestException(error.message || 'Sign-up failed');
+    }
   }
 
-  findAll() {
-    return this.authServiceClient.send(AUTH_SERVICES_PATTERNS.FIND_ALL, {});
-  }
+  async signIn(SignInDto: SignInDto) {
+    try {
+      const response$ = this.authServiceClient.send(
+        AUTH_SERVICES_PATTERNS.SIGNIN,
+        SignInDto,
+      );
 
-  findOne(id: number) {
-    return this.authServiceClient.send(AUTH_SERVICES_PATTERNS.FIND_ONE, id);
-  }
+      return await lastValueFrom(response$).catch((error) => {
+        console.error('API Gateway Sign-in Error:', error);
 
-  update(id: number, updateAuthServiceDto: UpdateAuthServiceDto) {
-    return this.authServiceClient.send(AUTH_SERVICES_PATTERNS.UPDATE, {
-      id,
-      ...updateAuthServiceDto,
-    });
-  }
-
-  delete(id: number) {
-    return this.authServiceClient.send(AUTH_SERVICES_PATTERNS.REMOVE, id);
+        // Ensure we return an HTTP-friendly error message
+        throw new BadRequestException(error.message || 'Sign-in failed');
+      });
+    } catch (error) {
+      console.error('API Gateway Sign-in Error:', error);
+      throw new BadRequestException(error.message || 'Sign-in failed');
+    }
   }
 }

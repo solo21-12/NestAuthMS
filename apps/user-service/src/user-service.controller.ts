@@ -28,8 +28,8 @@ export class UserServiceController {
   }
 
   @MessagePattern(USER_SERVICES_PATTERNS.UPDATE)
-  update(@Payload() updateAuthServiceDto: UpdateUserDto, id: string) {
-    return this.userServiceService.update(id, updateAuthServiceDto);
+  update(@Payload() SignInDto: UpdateUserDto, id: string) {
+    return this.userServiceService.update(id, SignInDto);
   }
 
   @MessagePattern(USER_SERVICES_PATTERNS.REMOVE)

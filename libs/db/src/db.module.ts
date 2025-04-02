@@ -16,6 +16,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
     }),
   ],
-  exports: [MongooseModule],
+  exports: [MongooseModule, ConfigModule],
 })
 export class DbModule {}

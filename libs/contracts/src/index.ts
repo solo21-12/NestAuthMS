@@ -1,8 +1,8 @@
-export { AuthServiceDto } from './auth-service/dtos/auth-service.dto';
-export { CreateAuthServiceDto } from './auth-service/dtos/create-auth-service.dto';
-export { UpdateAuthServiceDto } from './auth-service/dtos/update-auth-service.dto';
+export { AuthRefreshTokenDto } from './auth-service/dtos/refresh-token.dto';
+export { SignUpDto } from './auth-service/dtos/sign-up.dto';
+export { SignInDto } from './auth-service/dtos/sign-in.dto';
 export { AUTH_SERVICES_PATTERNS } from './auth-service/auth-service.patterns';
-
+export { AuthRto } from './auth-service/rtos/sign-up.rot';
 export { UserDto } from './user-service/dtos/user.dto';
 export { CreateUserDto } from './user-service/dtos/create-user-service.dto';
 export { UpdateUserDto } from './user-service/dtos/update-user-service.dto';
