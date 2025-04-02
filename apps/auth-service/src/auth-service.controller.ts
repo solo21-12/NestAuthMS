@@ -5,7 +5,7 @@ import {
   CreateAuthServiceDto,
   UpdateAuthServiceDto,
   AUTH_SERVICES_PATTERNS,
-} from '@app/contracts/auth-service';
+} from '@app/contracts';
 
 @Controller()
 export class AuthServiceController {
@@ -35,7 +35,7 @@ export class AuthServiceController {
   }
 
   @MessagePattern(AUTH_SERVICES_PATTERNS.REMOVE)
-  remove(@Payload() id: number) {
-    return this.authServiceService.remove(id);
+  delete(@Payload() id: number) {
+    return this.authServiceService.delete(id);
   }
 }

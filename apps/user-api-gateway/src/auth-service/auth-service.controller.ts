@@ -8,10 +8,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { AuthServiceService } from './auth-service.service';
-import {
-  CreateAuthServiceDto,
-  UpdateAuthServiceDto,
-} from '@app/contracts/auth-service';
+import { CreateAuthServiceDto, UpdateAuthServiceDto } from '@app/contracts';
 
 @Controller('auth')
 export class AuthServiceController {
@@ -41,7 +38,7 @@ export class AuthServiceController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authServiceService.remove(+id);
+  delete(@Param('id') id: string) {
+    return this.authServiceService.delete(+id);
   }
 }

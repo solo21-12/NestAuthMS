@@ -2,7 +2,7 @@ import {
   AuthServiceDto,
   CreateAuthServiceDto,
   UpdateAuthServiceDto,
-} from '@app/contracts/auth-service';
+} from '@app/contracts';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -36,7 +36,7 @@ export class AuthServiceService {
     return `This action updates a #${id} authService`;
   }
 
-  remove(id: number) {
+  delete(id: number) {
     return `This action removes a #${id} authService`;
   }
 }

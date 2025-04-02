@@ -1,8 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateAuthServiceDto } from './dto/create-auth-service.dto';
-import { UpdateAuthServiceDto } from './dto/update-auth-service.dto';
 import { ClientProxy } from '@nestjs/microservices';
-import { AUTH_SERVICES_PATTERNS } from '@app/contracts/auth-service';
+import {
+  AUTH_SERVICES_PATTERNS,
+  CreateAuthServiceDto,
+  UpdateAuthServiceDto,
+} from '@app/contracts';
 import { AUTH_SERVICES_CONSTANTS } from 'libs/constants';
 
 @Injectable()
@@ -33,7 +35,7 @@ export class AuthServiceService {
     });
   }
 
-  remove(id: number) {
+  delete(id: number) {
     return this.authServiceClient.send(AUTH_SERVICES_PATTERNS.REMOVE, id);
   }
 }

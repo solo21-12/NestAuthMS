@@ -23,6 +23,9 @@
       ],
       "@app/contracts/*": [
         "libs/contracts/src/*"
+      ],
+      "@app/db": [
+        "libs/db/src"
       ]
     }
   }
