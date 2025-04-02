@@ -3,11 +3,13 @@ import { CreateAuthServiceDto } from './dto/create-auth-service.dto';
 import { UpdateAuthServiceDto } from './dto/update-auth-service.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { AUTH_SERVICES_PATTERNS } from '@app/contracts/auth-service';
+import { AUTH_SERVICES_CONSTANTS } from 'libs/constants';
 
 @Injectable()
 export class AuthServiceService {
   constructor(
-    @Inject('AUTH_SERVICE') private readonly authServiceClient: ClientProxy,
+    @Inject(AUTH_SERVICES_CONSTANTS.NAME)
+    private readonly authServiceClient: ClientProxy,
   ) {}
   create(createAuthServiceDto: CreateAuthServiceDto) {
     return this.authServiceClient.send(

@@ -1,0 +1,4 @@
+export const USER_SERVICE_CONSTANTS = {
+  NAME: 'USER_SERVICE',
+  PORT: 3001,
+};

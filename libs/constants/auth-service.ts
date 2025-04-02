@@ -1,0 +1,4 @@
+export const AUTH_SERVICES_CONSTANTS = {
+  NAME: 'AUTH_SERVICE',
+  PORT: 3002,
+};

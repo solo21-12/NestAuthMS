@@ -2,16 +2,16 @@ import { Module } from '@nestjs/common';
 import { UserServiceService } from './user-service.service';
 import { UserServiceController } from './user-service.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { USER_SERVICE_CONSTANTS } from 'libs/constants';
 
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: 'USER_SERVICE',
+        name: USER_SERVICE_CONSTANTS.NAME,
         transport: Transport.TCP,
         options: {
-          host: 'localhost',
-          port: 3001,
+          port: USER_SERVICE_CONSTANTS.PORT,
         },
       },
     ]),
