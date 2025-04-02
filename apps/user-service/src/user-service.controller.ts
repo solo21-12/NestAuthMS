@@ -36,4 +36,9 @@ export class UserServiceController {
   delete(@Payload() id: string) {
     return this.userServiceService.delete(id);
   }
+
+  @MessagePattern(USER_SERVICES_PATTERNS.FIND_BY_EMAIL)
+  findByEmail(@Payload() email: string) {
+    return this.userServiceService.findByEmail(email);
+  }
 }

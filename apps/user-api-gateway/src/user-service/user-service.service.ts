@@ -5,7 +5,12 @@ import {
   GetUserRto,
   UpdateUserRto,
 } from '@app/contracts';
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { USER_SERVICE_CONSTANTS, UserRole } from 'libs/constants';
 import { lastValueFrom } from 'rxjs';
@@ -33,6 +38,15 @@ export class UserServiceService {
   }
 
   async create(createUserDto: CreateUserDto): Promise<CreateUserRto> {
+    // Check if user already exists
+    const existingUser$ = this.userClient.send(
+      USER_SERVICES_PATTERNS.FIND_BY_EMAIL,
+      createUserDto.email,
+    );
+    const existingUser = await lastValueFrom(existingUser$);
+    if (existingUser) {
+      throw new ConflictException('User already exists');
+    }
     const user$ = this.userClient.send(
       USER_SERVICES_PATTERNS.CREATE,
       createUserDto,
@@ -44,6 +58,9 @@ export class UserServiceService {
   async findById(id: string): Promise<GetUserRto> {
     const user$ = this.userClient.send(USER_SERVICES_PATTERNS.FIND_ONE, id);
     const user = await lastValueFrom(user$);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     return this.userDtoToRto(user);
   }
 
@@ -51,6 +68,15 @@ export class UserServiceService {
     id: string,
     updateUserDto: CreateUserDto,
   ): Promise<UpdateUserRto> {
+    // Check if user exists
+    const existingUser$ = this.userClient.send(
+      USER_SERVICES_PATTERNS.FIND_ONE,
+      id,
+    );
+    const existingUser = await lastValueFrom(existingUser$);
+    if (!existingUser) {
+      throw new NotFoundException('User not found');
+    }
     const user$ = this.userClient.send(USER_SERVICES_PATTERNS.UPDATE, {
       id,
       ...updateUserDto,
