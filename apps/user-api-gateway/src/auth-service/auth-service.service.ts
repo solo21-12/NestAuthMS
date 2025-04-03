@@ -40,7 +40,6 @@ export class AuthServiceService {
       return await lastValueFrom(response$).catch((error) => {
         console.error('API Gateway Sign-in Error:', error);
 
-        // Ensure we return an HTTP-friendly error message
         throw new BadRequestException(error.message || 'Sign-in failed');
       });
     } catch (error) {
@@ -49,9 +48,15 @@ export class AuthServiceService {
     }
   }
 
-  async signOut(refreshToken: string) {
+  async signOut(accessToken: string) {
     try {
-      this.authServiceClient.send(AUTH_SERVICES_PATTERNS.SIGNOUT, refreshToken);
+      const response = await lastValueFrom(
+        this.authServiceClient.send(
+          AUTH_SERVICES_PATTERNS.SIGNOUT,
+          accessToken,
+        ),
+      );
+      return response;
     } catch (error) {
       console.error('API Gateway Sign-out Error:', error);
       throw new BadRequestException(error.message || 'Sign-out failed');

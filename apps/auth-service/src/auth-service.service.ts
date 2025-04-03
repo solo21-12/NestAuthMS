@@ -11,8 +11,7 @@ import {
   USER_SERVICES_PATTERNS,
 } from '@app/contracts';
 import { USER_SERVICE_CONSTANTS } from 'libs/constants';
-import { RedisService } from './redis.service';
-import { ConfigService } from '@nestjs/config';
+import { RedisService } from 'libs/services';
 
 @Injectable()
 export class AuthServiceService {
@@ -22,7 +21,6 @@ export class AuthServiceService {
     private readonly passwordHashService: PasswordHashService,
     private readonly authJwtService: AuthJwtService,
     private readonly redisService: RedisService,
-    private readonly configService: ConfigService,
   ) {}
 
   private async getUser(email: string) {
@@ -164,17 +162,25 @@ export class AuthServiceService {
     };
   }
 
-  async signOut(accessToken: string): Promise<void> {
+  async signOut(accessToken: string): Promise<{ message: string }> {
     try {
-      const decodedToken: any = this.authJwtService.decodeToken(accessToken);
+      const decodedToken: any = await this.authJwtService.decodeToken(
+        accessToken,
+      );
+
       if (!decodedToken) {
         throw new UnauthorizedException('Invalid token');
       }
 
       const userId = decodedToken.sub;
+
+      // Remove the access and refresh tokens from Redis
       await this.redisService.deleteKey(userId + ':access_token');
       await this.redisService.deleteKey(userId + ':refresh_token');
+
+      return { message: 'Sign-out successful' };
     } catch (error) {
+      console.error('Sign-out error:', error);
       throw new UnauthorizedException('Logout failed');
     }
   }

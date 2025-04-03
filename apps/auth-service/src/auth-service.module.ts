@@ -9,10 +9,11 @@ import { AuthJwtService } from './jwt.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { AppConfigModule } from 'libs/config/src/config.module';
-import { RedisService } from './redis.service';
+import { AppServiceModule } from 'libs/services';
 
 @Module({
   imports: [
+    AppServiceModule,
     AppConfigModule,
     DbModule,
     ClientsModule.register([
@@ -35,11 +36,6 @@ import { RedisService } from './redis.service';
     }),
   ],
   controllers: [AuthServiceController],
-  providers: [
-    AuthServiceService,
-    PasswordHashService,
-    AuthJwtService,
-    RedisService,
-  ],
+  providers: [AuthServiceService, PasswordHashService, AuthJwtService],
 })
 export class AuthServiceModule {}

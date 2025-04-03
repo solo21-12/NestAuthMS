@@ -3,9 +3,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { ConfigService } from '@nestjs/config';
 import { AppConfigModule } from 'libs/config/src/config.module';
+import { AppServiceModule } from 'libs/services';
 
 @Module({
   imports: [
+    AppServiceModule,
     AppConfigModule,
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({
@@ -18,6 +20,6 @@ import { AppConfigModule } from 'libs/config/src/config.module';
     }),
   ],
   providers: [JwtAuthGuard],
-  exports: [JwtAuthGuard, JwtModule],
+  exports: [JwtAuthGuard, JwtModule, AppServiceModule],
 })
 export class GuardsModule {}

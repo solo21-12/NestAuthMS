@@ -14,11 +14,12 @@ export class AuthServiceController {
 
   @MessagePattern(AUTH_SERVICES_PATTERNS.SIGNIN)
   login(@Payload() signInDto: SignInDto) {
+    console.log(`SignInDto: ${JSON.stringify(signInDto)}`);
     return this.authServiceService.signIn(signInDto);
   }
 
   @MessagePattern(AUTH_SERVICES_PATTERNS.SIGNOUT)
-  logout(@Payload() refreshToken: string) {
-    return this.authServiceService.signOut(refreshToken);
+  logout(@Payload() accessToken: string) {
+    return this.authServiceService.signOut(accessToken);
   }
 }

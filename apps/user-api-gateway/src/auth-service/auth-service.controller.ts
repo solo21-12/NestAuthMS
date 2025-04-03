@@ -34,7 +34,6 @@ export class AuthServiceController {
   @Post('sign-out')
   async logout(@Headers('authorization') authHeader: string) {
     const accessToken = this.extractTokenFromHeader(authHeader);
-
     if (!accessToken) {
       throw new Error('Access token is missing');
     }
