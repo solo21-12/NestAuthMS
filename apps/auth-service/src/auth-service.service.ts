@@ -86,7 +86,7 @@ export class AuthServiceService {
       );
 
       const createdUser$ = this.userClient.send(USER_SERVICES_PATTERNS.CREATE, {
-        ...SignUpDto,
+        ...signUpDto,
         password: hashedPassword,
       });
 
