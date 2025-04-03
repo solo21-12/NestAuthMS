@@ -70,9 +70,13 @@ export class AuthServiceService {
 
   async refreshToken({ accessToken, refreshToken }: AuthRefreshTokenDto) {
     try {
+      const payload = {
+        accessToken,
+        refreshToken,
+      };
       const response$ = this.authServiceClient.send(
         AUTH_SERVICES_PATTERNS.REFRESH_TOKEN,
-        { refreshToken, accessToken },
+        payload,
       );
 
       return await lastValueFrom(response$).catch((error) => {

@@ -30,9 +30,11 @@ export class AuthServiceController {
   @MessagePattern(AUTH_SERVICES_PATTERNS.REFRESH_TOKEN)
   refreshToken(
     @Payload()
-    { accessToken, refreshToken }: AuthRefreshTokenDto,
+    payload: AuthRefreshTokenDto,
   ) {
-    console.log('accessToken', accessToken);
-    return this.authServiceService.refreshToken(refreshToken, accessToken);
+    return this.authServiceService.refreshToken(
+      payload.refreshToken,
+      payload.accessToken,
+    );
   }
 }

@@ -1,5 +1,5 @@
 import { AuthJwtService } from './jwt.service';
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { RpcException } from '@nestjs/microservices';
@@ -111,13 +111,18 @@ export class AuthServiceService {
     const storedAccessToken = await this.redisService.getKey(
       userId + ':access_token',
     );
-
     if (refreshToken !== storedRefreshToken) {
-      throw new UnauthorizedException('Invalid refresh token');
+      throw new RpcException({
+        statusCode: 400,
+        message: 'Invalid refresh token',
+      });
     }
 
     if (access_token !== storedAccessToken) {
-      throw new UnauthorizedException('Invalid access token');
+      throw new RpcException({
+        statusCode: 400,
+        message: 'Invalid access token',
+      });
     }
   }
 
@@ -151,6 +156,12 @@ export class AuthServiceService {
       const { access_token, refresh_token } = await this.generateTokens(
         createdUser.id,
         createdUser.role,
+      );
+
+      await this.storeTokensInRedis(
+        createdUser.id,
+        access_token,
+        refresh_token,
       );
 
       return {
@@ -216,7 +227,10 @@ export class AuthServiceService {
       );
 
       if (!decodedToken) {
-        throw new UnauthorizedException('Invalid token');
+        throw new RpcException({
+          statusCode: 400,
+          message: 'Invalid token',
+        });
       }
 
       const userId = decodedToken.sub;
@@ -228,7 +242,11 @@ export class AuthServiceService {
       return { message: 'Sign-out successful' };
     } catch (error) {
       console.error('Sign-out error:', error);
-      throw new UnauthorizedException('Logout failed');
+
+      throw new RpcException({
+        statusCode: 400,
+        message: 'Logout failed',
+      });
     }
   }
 
@@ -242,7 +260,10 @@ export class AuthServiceService {
       );
 
       if (!decodedToken) {
-        throw new UnauthorizedException('Invalid token');
+        throw new RpcException({
+          statusCode: 400,
+          message: 'Invalid token',
+        });
       }
 
       const userId = decodedToken.sub;
@@ -258,7 +279,10 @@ export class AuthServiceService {
       return { access_token: newAccessToken, refresh_token: newRefreshToken };
     } catch (error) {
       console.error('Error refreshing token:', error);
-      throw new UnauthorizedException('Failed to refresh token');
+      throw new RpcException({
+        statusCode: 400,
+        message: 'Failed to refresh token',
+      });
     }
   }
 }
