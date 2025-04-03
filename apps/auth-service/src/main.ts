@@ -3,6 +3,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 import { AuthServiceModule } from './auth-service.module';
 import { AUTH_SERVICES_CONSTANTS } from 'libs/constants';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -14,6 +15,15 @@ async function bootstrap() {
       },
     },
   );
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
   await app.listen();
 }
 bootstrap();

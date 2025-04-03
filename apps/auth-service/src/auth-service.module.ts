@@ -6,12 +6,13 @@ import { PasswordHashService } from './password-hash.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { USER_SERVICE_CONSTANTS } from 'libs/constants';
 import { AuthJwtService } from './jwt.service';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { AppConfigModule } from 'libs/config/src/config.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    AppConfigModule,
     DbModule,
     ClientsModule.register([
       {
@@ -23,7 +24,6 @@ import { JwtModule } from '@nestjs/jwt';
       },
     ]),
     JwtModule.registerAsync({
-      imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: {

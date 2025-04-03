@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtAuthGuard } from './jwt-auth.guard';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
+import { AppConfigModule } from 'libs/config/src/config.module';
 
 @Module({
   imports: [
-    ConfigModule, // ✅ Ensure ConfigModule is imported
+    AppConfigModule,
     JwtModule.registerAsync({
-      imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: {
@@ -18,6 +18,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
   ],
   providers: [JwtAuthGuard],
-  exports: [JwtAuthGuard, JwtModule], // ✅ Export JwtModule
+  exports: [JwtAuthGuard, JwtModule],
 })
 export class GuardsModule {}

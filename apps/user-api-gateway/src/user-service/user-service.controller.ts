@@ -11,13 +11,14 @@ import {
 } from '@nestjs/common';
 import { UserServiceService } from './user-service.service';
 import { CreateUserDto } from '@app/contracts';
-import { JwtAuthGuard } from 'libs/guards/src/jwt-auth.guard';
+import { AdminGuard, JwtAuthGuard } from 'libs/guards';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UserServiceController {
   constructor(private readonly userService: UserServiceService) {}
 
+  @UseGuards(AdminGuard)
   @Post()
   create(@Body(new ValidationPipe()) createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
@@ -33,6 +34,7 @@ export class UserServiceController {
     return this.userService.findById(id);
   }
 
+  @UseGuards(AdminGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -41,6 +43,7 @@ export class UserServiceController {
     return this.userService.update(id, createUserDto);
   }
 
+  @UseGuards(AdminGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.delete(id);

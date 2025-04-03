@@ -17,6 +17,7 @@ export class AuthJwtService {
     return {
       access_token: await this.jwtService.signAsync(payload, {
         expiresIn: this.configService.get<string>('JWT_EXPIRES_IN') || '15m',
+        secret: this.configService.get<string>('JWT_SECRET'),
       }),
     };
   }
@@ -27,7 +28,7 @@ export class AuthJwtService {
     const payload = { sub: userId };
     return {
       refresh_token: await this.jwtService.signAsync(payload, {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+        secret: this.configService.get<string>('JWT_SECRET'),
         expiresIn:
           this.configService.get<string>('JWT_REFRESH_EXPIRES_IN') || '7d',
       }),
@@ -47,7 +48,7 @@ export class AuthJwtService {
   async verifyRefreshToken(token: string) {
     try {
       return this.jwtService.verifyAsync(token, {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+        secret: this.configService.get<string>('JWT_SECRET'),
       });
     } catch (error) {
       return null;
