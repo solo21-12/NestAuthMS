@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AuthServiceService } from './auth-service.service';
 import { AuthServiceController } from './auth-service.controller';
 import { DbModule } from 'libs/db/src/db.module';
-import { PasswordHashService } from './password-hash.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { USER_SERVICE_CONSTANTS } from 'libs/constants';
 import { AuthJwtService } from './jwt.service';
@@ -36,6 +35,6 @@ import { AppServiceModule } from 'libs/services';
     }),
   ],
   controllers: [AuthServiceController],
-  providers: [AuthServiceService, PasswordHashService, AuthJwtService],
+  providers: [AuthServiceService, AuthJwtService],
 })
 export class AuthServiceModule {}

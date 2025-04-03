@@ -3,7 +3,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { RpcException } from '@nestjs/microservices';
-import { PasswordHashService } from './password-hash.service';
 import {
   SignInDto,
   SignUpDto,
@@ -11,7 +10,7 @@ import {
   USER_SERVICES_PATTERNS,
 } from '@app/contracts';
 import { USER_SERVICE_CONSTANTS } from 'libs/constants';
-import { RedisService } from 'libs/services';
+import { PasswordHashService, RedisService } from 'libs/services';
 
 @Injectable()
 export class AuthServiceService {
@@ -31,7 +30,7 @@ export class AuthServiceService {
       );
       const existingUser = await lastValueFrom(existingUser$);
 
-      return existingUser || null; // ✅ Explicitly return null if not found
+      return existingUser || null;
     } catch (error) {
       console.error('Error fetching user:', error);
       throw new RpcException({
