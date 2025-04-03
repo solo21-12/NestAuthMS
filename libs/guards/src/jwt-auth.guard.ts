@@ -4,10 +4,8 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { RedisService } from 'libs/services';
+import { AuthJwtService, RedisService } from 'libs/services';
 
 declare module 'express' {
   export interface Request {
@@ -18,9 +16,8 @@ declare module 'express' {
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
     private readonly redisService: RedisService,
+    private readonly authJwtService: AuthJwtService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -32,9 +29,7 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     try {
-      const decoded = await this.jwtService.verifyAsync(token, {
-        secret: this.configService.get<string>('JWT_SECRET'),
-      });
+      const decoded = await this.authJwtService.decodeToken(token);
 
       // Check if the token is in Redis
       const isTokenInRedis = await this.checkTokenInRedis(token, decoded.sub);
