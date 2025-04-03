@@ -12,7 +12,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { USER_SERVICE_CONSTANTS, UserRole } from 'libs/constants';
+import {
+  ERROR_MESSAGES,
+  USER_SERVICE_CONSTANTS,
+  UserRole,
+} from 'libs/constants';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable()
@@ -45,7 +49,7 @@ export class UserServiceService {
     );
     const existingUser = await lastValueFrom(existingUser$);
     if (existingUser) {
-      throw new ConflictException('User already exists');
+      throw new ConflictException(ERROR_MESSAGES.USER_ALREADY_EXISTS);
     }
     const user$ = this.userClient.send(
       USER_SERVICES_PATTERNS.CREATE,
@@ -59,7 +63,7 @@ export class UserServiceService {
     const user$ = this.userClient.send(USER_SERVICES_PATTERNS.FIND_ONE, id);
     const user = await lastValueFrom(user$);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(ERROR_MESSAGES.USER_NOT_FOUND);
     }
     return this.userDtoToRto(user);
   }
@@ -75,7 +79,7 @@ export class UserServiceService {
     );
     const existingUser = await lastValueFrom(existingUser$);
     if (!existingUser) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(ERROR_MESSAGES.USER_NOT_FOUND);
     }
     const user$ = this.userClient.send(USER_SERVICES_PATTERNS.UPDATE, {
       id,

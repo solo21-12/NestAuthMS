@@ -26,7 +26,6 @@ export class AuthServiceService {
       return await lastValueFrom(response$).catch((error) => {
         console.error('API Gateway Sign-up Error:', error);
 
-        // Ensure we return an HTTP-friendly error message
         throw new BadRequestException(error.message || 'Sign-up failed');
       });
     } catch (error) {

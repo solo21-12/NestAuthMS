@@ -5,10 +5,12 @@ import {
   ValidationPipe,
   Headers,
   UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthServiceService } from './auth-service.service';
 import { SignInDto, SignUpDto } from '@app/contracts';
 import { JwtAuthGuard } from 'libs/guards';
+import { ERROR_MESSAGES } from 'libs/constants';
 
 @Controller('auth')
 export class AuthServiceController {
@@ -35,7 +37,7 @@ export class AuthServiceController {
   async logout(@Headers('authorization') authHeader: string) {
     const accessToken = this.extractTokenFromHeader(authHeader);
     if (!accessToken) {
-      throw new Error('Access token is missing');
+      throw new UnauthorizedException(ERROR_MESSAGES.TOKEN_MISSING);
     }
 
     return await this.authServiceService.signOut(accessToken);
@@ -54,7 +56,7 @@ export class AuthServiceController {
     const accessToken = this.extractTokenFromHeader(authHeader);
 
     if (!accessToken) {
-      throw new Error('Access token is missing');
+      throw new UnauthorizedException(ERROR_MESSAGES.TOKEN_MISSING);
     }
 
     return await this.authServiceService.refreshToken({

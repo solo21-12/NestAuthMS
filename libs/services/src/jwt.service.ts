@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { ERROR_MESSAGES } from 'libs/constants';
 
 @Injectable()
 export class AuthJwtService {
@@ -41,7 +42,7 @@ export class AuthJwtService {
         secret: this.configService.get<string>('JWT_SECRET'),
       });
     } catch (error) {
-      throw new Error('Invalid token');
+      throw new Error(ERROR_MESSAGES.INVALID_TOKEN);
     }
   }
 
@@ -59,7 +60,7 @@ export class AuthJwtService {
     try {
       return this.jwtService.decode(token);
     } catch (error) {
-      throw new Error('Invalid token');
+      throw new Error(ERROR_MESSAGES.INVALID_TOKEN);
     }
   }
 }

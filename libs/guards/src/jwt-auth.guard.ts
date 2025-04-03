@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { ERROR_MESSAGES } from 'libs/constants';
 import { AuthJwtService, RedisService } from 'libs/services';
 
 declare module 'express' {
@@ -25,7 +26,7 @@ export class JwtAuthGuard implements CanActivate {
     const token = this.extractToken(request);
 
     if (!token) {
-      throw new UnauthorizedException('No token provided');
+      throw new UnauthorizedException(ERROR_MESSAGES.TOKEN_MISSING);
     }
 
     try {
@@ -34,13 +35,13 @@ export class JwtAuthGuard implements CanActivate {
       // Check if the token is in Redis
       const isTokenInRedis = await this.checkTokenInRedis(token, decoded.sub);
       if (!isTokenInRedis) {
-        throw new UnauthorizedException('Invalid or expired token f');
+        throw new UnauthorizedException(ERROR_MESSAGES.INVALID_TOKEN);
       }
 
       request.user = decoded;
       return true;
     } catch (error) {
-      throw new UnauthorizedException('Invalid or expired token');
+      throw new UnauthorizedException(ERROR_MESSAGES.INVALID_TOKEN);
     }
   }
 

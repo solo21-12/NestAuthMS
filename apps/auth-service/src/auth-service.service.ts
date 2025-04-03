@@ -8,7 +8,7 @@ import {
   AuthRto,
   USER_SERVICES_PATTERNS,
 } from '@app/contracts';
-import { USER_SERVICE_CONSTANTS } from 'libs/constants';
+import { ERROR_MESSAGES, USER_SERVICE_CONSTANTS } from 'libs/constants';
 import {
   AuthJwtService,
   PasswordHashService,
@@ -38,7 +38,7 @@ export class AuthServiceService {
       console.error('Error fetching user:', error);
       throw new RpcException({
         statusCode: 500,
-        message: 'Internal server error while fetching user',
+        message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
       });
     }
   }
@@ -58,7 +58,7 @@ export class AuthServiceService {
       console.error('Error generating tokens:', error);
       throw new RpcException({
         statusCode: 500,
-        message: 'Failed to generate tokens',
+        message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
       });
     }
   }
@@ -71,7 +71,7 @@ export class AuthServiceService {
       console.error('Error checking user existence:', error);
       throw new RpcException({
         statusCode: 500,
-        message: 'Failed to check user existence',
+        message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
       });
     }
   }
@@ -96,7 +96,7 @@ export class AuthServiceService {
       console.error('Error storing tokens in Redis:', error);
       throw new RpcException({
         statusCode: 500,
-        message: 'Failed to store tokens in Redis',
+        message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
       });
     }
   }
@@ -116,14 +116,14 @@ export class AuthServiceService {
     if (refreshToken !== storedRefreshToken) {
       throw new RpcException({
         statusCode: 400,
-        message: 'Invalid refresh token',
+        message: ERROR_MESSAGES.INVALID_TOKEN,
       });
     }
 
     if (access_token !== storedAccessToken) {
       throw new RpcException({
         statusCode: 400,
-        message: 'Invalid access token',
+        message: ERROR_MESSAGES.INVALID_TOKEN,
       });
     }
   }
@@ -133,7 +133,7 @@ export class AuthServiceService {
       if (await this.checkUserExists(signUpDto.email)) {
         throw new RpcException({
           statusCode: 400,
-          message: 'User already exists',
+          message: ERROR_MESSAGES.USER_ALREADY_EXISTS,
         });
       }
 
@@ -151,7 +151,7 @@ export class AuthServiceService {
       if (!createdUser || !createdUser.id || !createdUser.role) {
         throw new RpcException({
           statusCode: 500,
-          message: 'User creation failed: Invalid response from user service',
+          message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
         });
       }
 
@@ -174,7 +174,7 @@ export class AuthServiceService {
       console.error('Sign-up error:', error);
       throw new RpcException({
         statusCode: error?.statusCode || 400,
-        message: error?.message || 'Failed to sign up',
+        message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
       });
     }
   }
@@ -185,7 +185,7 @@ export class AuthServiceService {
     if (!existUser) {
       throw new RpcException({
         statusCode: 400,
-        message: 'Invalid credentials',
+        message: ERROR_MESSAGES.INVALID_CREDENTIALS,
       });
     }
 
@@ -197,7 +197,7 @@ export class AuthServiceService {
     if (!isPasswordValid) {
       throw new RpcException({
         statusCode: 400,
-        message: 'Invalid credentials',
+        message: ERROR_MESSAGES.INVALID_CREDENTIALS,
       });
     }
     const { access_token, refresh_token } = await this.generateTokens(
@@ -231,7 +231,7 @@ export class AuthServiceService {
       if (!decodedToken) {
         throw new RpcException({
           statusCode: 400,
-          message: 'Invalid token',
+          message: ERROR_MESSAGES.INVALID_TOKEN,
         });
       }
 
@@ -247,7 +247,7 @@ export class AuthServiceService {
 
       throw new RpcException({
         statusCode: 400,
-        message: 'Logout failed',
+        message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
       });
     }
   }
@@ -264,7 +264,7 @@ export class AuthServiceService {
       if (!decodedToken) {
         throw new RpcException({
           statusCode: 400,
-          message: 'Invalid token',
+          message: ERROR_MESSAGES.INVALID_TOKEN,
         });
       }
 
@@ -283,7 +283,7 @@ export class AuthServiceService {
       console.error('Error refreshing token:', error);
       throw new RpcException({
         statusCode: 400,
-        message: 'Failed to refresh token',
+        message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
       });
     }
   }
