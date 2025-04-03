@@ -54,4 +54,12 @@ export class AuthJwtService {
       return null;
     }
   }
+
+  async decodeToken(token: string) {
+    try {
+      return this.jwtService.decode(token);
+    } catch (error) {
+      throw new Error('Invalid token');
+    }
+  }
 }

@@ -9,6 +9,7 @@ import { AuthJwtService } from './jwt.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { AppConfigModule } from 'libs/config/src/config.module';
+import { RedisService } from './redis.service';
 
 @Module({
   imports: [
@@ -34,6 +35,11 @@ import { AppConfigModule } from 'libs/config/src/config.module';
     }),
   ],
   controllers: [AuthServiceController],
-  providers: [AuthServiceService, PasswordHashService, AuthJwtService],
+  providers: [
+    AuthServiceService,
+    PasswordHashService,
+    AuthJwtService,
+    RedisService,
+  ],
 })
 export class AuthServiceModule {}

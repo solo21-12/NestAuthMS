@@ -3,12 +3,12 @@ import { UserServiceService } from './user-service.service';
 import { UserServiceController } from './user-service.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { USER_SERVICE_CONSTANTS } from 'libs/constants';
-import { GuardsModule } from 'libs/guards/src/guards.module';
-import { ConfigModule } from '@nestjs/config'; // ✅ Import ConfigModule
+import { ConfigModule } from '@nestjs/config';
+import { GuardsModule } from 'libs/guards';
 
 @Module({
   imports: [
-    ConfigModule, // ✅ Ensure ConfigModule is imported
+    ConfigModule,
     ClientsModule.register([
       {
         name: USER_SERVICE_CONSTANTS.NAME,
@@ -18,7 +18,7 @@ import { ConfigModule } from '@nestjs/config'; // ✅ Import ConfigModule
         },
       },
     ]),
-    GuardsModule, // ✅ Ensure GuardsModule is still imported
+    GuardsModule,
   ],
   providers: [UserServiceService],
   controllers: [UserServiceController],

@@ -17,26 +17,8 @@ export class AuthServiceController {
     return this.authServiceService.signIn(signInDto);
   }
 
-  // @MessagePattern(AUTH_SERVICES_PATTERNS.FIND_ALL)
-  // findAll() {
-  //   return this.authServiceService.findAll();
-  // }
-
-  // @MessagePattern(AUTH_SERVICES_PATTERNS.FIND_ONE)
-  // findOne(@Payload() id: number) {
-  //   return this.authServiceService.findOne(id);
-  // }
-
-  // @MessagePattern(AUTH_SERVICES_PATTERNS.UPDATE)
-  // update(@Payload() SignInDto: SignInDto) {
-  //   return this.authServiceService.update(
-  //     SignInDto.id,
-  //     SignInDto,
-  //   );
-  // }
-
-  // @MessagePattern(AUTH_SERVICES_PATTERNS.REMOVE)
-  // delete(@Payload() id: number) {
-  //   return this.authServiceService.delete(id);
-  // }
+  @MessagePattern(AUTH_SERVICES_PATTERNS.SIGNOUT)
+  logout(@Payload() refreshToken: string) {
+    return this.authServiceService.signOut(refreshToken);
+  }
 }

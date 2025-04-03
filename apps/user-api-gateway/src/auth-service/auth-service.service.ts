@@ -48,4 +48,13 @@ export class AuthServiceService {
       throw new BadRequestException(error.message || 'Sign-in failed');
     }
   }
+
+  async signOut(refreshToken: string) {
+    try {
+      this.authServiceClient.send(AUTH_SERVICES_PATTERNS.SIGNOUT, refreshToken);
+    } catch (error) {
+      console.error('API Gateway Sign-out Error:', error);
+      throw new BadRequestException(error.message || 'Sign-out failed');
+    }
+  }
 }

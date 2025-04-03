@@ -3,6 +3,7 @@ import { AuthServiceService } from './auth-service.service';
 import { AuthServiceController } from './auth-service.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AUTH_SERVICES_CONSTANTS } from 'libs/constants';
+import { GuardsModule } from 'libs/guards';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AUTH_SERVICES_CONSTANTS } from 'libs/constants';
         },
       },
     ]),
+    GuardsModule,
   ],
   controllers: [AuthServiceController],
   providers: [AuthServiceService],

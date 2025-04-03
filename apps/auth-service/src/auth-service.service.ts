@@ -1,5 +1,5 @@
 import { AuthJwtService } from './jwt.service';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 import { RpcException } from '@nestjs/microservices';
@@ -11,6 +11,8 @@ import {
   USER_SERVICES_PATTERNS,
 } from '@app/contracts';
 import { USER_SERVICE_CONSTANTS } from 'libs/constants';
+import { RedisService } from './redis.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthServiceService {
@@ -19,6 +21,8 @@ export class AuthServiceService {
     private readonly userClient: ClientProxy,
     private readonly passwordHashService: PasswordHashService,
     private readonly authJwtService: AuthJwtService,
+    private readonly redisService: RedisService,
+    private readonly configService: ConfigService,
   ) {}
 
   private async getUser(email: string) {
@@ -142,9 +146,36 @@ export class AuthServiceService {
       existUser.id,
       existUser.role,
     );
+
+    await this.redisService.setKey(
+      existUser.id + ':access_token',
+      access_token,
+      15 * 60,
+    );
+
+    await this.redisService.setKey(
+      existUser.id + ':refresh_token',
+      refresh_token,
+      7 * 24 * 60 * 60,
+    );
     return {
       access_token,
       refresh_token,
     };
+  }
+
+  async signOut(accessToken: string): Promise<void> {
+    try {
+      const decodedToken: any = this.authJwtService.decodeToken(accessToken);
+      if (!decodedToken) {
+        throw new UnauthorizedException('Invalid token');
+      }
+
+      const userId = decodedToken.sub;
+      await this.redisService.deleteKey(userId + ':access_token');
+      await this.redisService.deleteKey(userId + ':refresh_token');
+    } catch (error) {
+      throw new UnauthorizedException('Logout failed');
+    }
   }
 }
