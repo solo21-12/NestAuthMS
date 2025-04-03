@@ -33,8 +33,9 @@ export class UserServiceService {
 
   async findAll(): Promise<GetUserRto[]> {
     const users$ = this.userClient.send(USER_SERVICES_PATTERNS.FIND_ALL, {});
-    const users = await lastValueFrom(users$);
-    return users.map((user: any) => this.userDtoToRto(user));
+    const users: any = await lastValueFrom(users$);
+
+    return users.map(({ id, name, email }: any) => ({ id, name, email }));
   }
 
   async create(createUserDto: CreateUserDto): Promise<CreateUserRto> {

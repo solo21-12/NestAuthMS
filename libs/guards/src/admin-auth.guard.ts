@@ -10,7 +10,7 @@ import { USER_ROLES } from 'libs/constants';
 @Injectable()
 export class AdminGuard extends JwtAuthGuard implements CanActivate {
   constructor() {
-    super(null, null);
+    super(null, null, null);
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
