@@ -1,6 +1,11 @@
 import { Inject, Injectable, BadRequestException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { AUTH_SERVICES_PATTERNS, SignInDto, SignUpDto } from '@app/contracts';
+import {
+  AUTH_SERVICES_PATTERNS,
+  AuthRefreshTokenDto,
+  SignInDto,
+  SignUpDto,
+} from '@app/contracts';
 import { AUTH_SERVICES_CONSTANTS } from 'libs/constants';
 import { lastValueFrom } from 'rxjs';
 
@@ -60,6 +65,24 @@ export class AuthServiceService {
     } catch (error) {
       console.error('API Gateway Sign-out Error:', error);
       throw new BadRequestException(error.message || 'Sign-out failed');
+    }
+  }
+
+  async refreshToken({ accessToken, refreshToken }: AuthRefreshTokenDto) {
+    try {
+      const response$ = this.authServiceClient.send(
+        AUTH_SERVICES_PATTERNS.REFRESH_TOKEN,
+        { refreshToken, accessToken },
+      );
+
+      return await lastValueFrom(response$).catch((error) => {
+        console.error('API Gateway Refresh Token Error:', error);
+
+        throw new BadRequestException(error.message || 'Refresh token failed');
+      });
+    } catch (error) {
+      console.error('API Gateway Refresh Token Error:', error);
+      throw new BadRequestException(error.message || 'Refresh token failed');
     }
   }
 }

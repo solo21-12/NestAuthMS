@@ -40,4 +40,26 @@ export class AuthServiceController {
 
     return await this.authServiceService.signOut(accessToken);
   }
+
+  @Post('refresh-token')
+  async refreshToken(
+    @Headers('authorization') authHeader: string,
+    @Body()
+    {
+      refresh_token,
+    }: {
+      refresh_token: string;
+    },
+  ) {
+    const accessToken = this.extractTokenFromHeader(authHeader);
+
+    if (!accessToken) {
+      throw new Error('Access token is missing');
+    }
+
+    return await this.authServiceService.refreshToken({
+      accessToken,
+      refreshToken: refresh_token,
+    });
+  }
 }

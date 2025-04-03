@@ -1,7 +1,12 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { AuthServiceService } from './auth-service.service';
-import { SignUpDto, SignInDto, AUTH_SERVICES_PATTERNS } from '@app/contracts';
+import {
+  SignUpDto,
+  SignInDto,
+  AUTH_SERVICES_PATTERNS,
+  AuthRefreshTokenDto,
+} from '@app/contracts';
 
 @Controller()
 export class AuthServiceController {
@@ -14,12 +19,20 @@ export class AuthServiceController {
 
   @MessagePattern(AUTH_SERVICES_PATTERNS.SIGNIN)
   login(@Payload() signInDto: SignInDto) {
-    console.log(`SignInDto: ${JSON.stringify(signInDto)}`);
     return this.authServiceService.signIn(signInDto);
   }
 
   @MessagePattern(AUTH_SERVICES_PATTERNS.SIGNOUT)
   logout(@Payload() accessToken: string) {
     return this.authServiceService.signOut(accessToken);
+  }
+
+  @MessagePattern(AUTH_SERVICES_PATTERNS.REFRESH_TOKEN)
+  refreshToken(
+    @Payload()
+    { accessToken, refreshToken }: AuthRefreshTokenDto,
+  ) {
+    console.log('accessToken', accessToken);
+    return this.authServiceService.refreshToken(refreshToken, accessToken);
   }
 }

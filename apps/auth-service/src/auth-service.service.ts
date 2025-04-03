@@ -74,6 +74,53 @@ export class AuthServiceService {
     }
   }
 
+  private async storeTokensInRedis(
+    userId: string,
+    accessToken: string,
+    refreshToken: string,
+  ): Promise<void> {
+    try {
+      await this.redisService.setKey(
+        userId + ':access_token',
+        accessToken,
+        15 * 60,
+      );
+      await this.redisService.setKey(
+        userId + ':refresh_token',
+        refreshToken,
+        7 * 24 * 60 * 60,
+      );
+    } catch (error) {
+      console.error('Error storing tokens in Redis:', error);
+      throw new RpcException({
+        statusCode: 500,
+        message: 'Failed to store tokens in Redis',
+      });
+    }
+  }
+
+  private async validateToken(
+    userId: string,
+    refreshToken: string,
+    access_token: string,
+  ) {
+    const storedRefreshToken = await this.redisService.getKey(
+      userId + ':refresh_token',
+    );
+
+    const storedAccessToken = await this.redisService.getKey(
+      userId + ':access_token',
+    );
+
+    if (refreshToken !== storedRefreshToken) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+
+    if (access_token !== storedAccessToken) {
+      throw new UnauthorizedException('Invalid access token');
+    }
+  }
+
   async signUp(signUpDto: SignUpDto): Promise<AuthRto> {
     try {
       if (await this.checkUserExists(signUpDto.email)) {
@@ -182,6 +229,36 @@ export class AuthServiceService {
     } catch (error) {
       console.error('Sign-out error:', error);
       throw new UnauthorizedException('Logout failed');
+    }
+  }
+
+  async refreshToken(
+    refreshToken: string,
+    access_token: string,
+  ): Promise<AuthRto> {
+    try {
+      const decodedToken: any = await this.authJwtService.decodeToken(
+        refreshToken,
+      );
+
+      if (!decodedToken) {
+        throw new UnauthorizedException('Invalid token');
+      }
+
+      const userId = decodedToken.sub;
+
+      // Validate the refresh token and access token
+      await this.validateToken(userId, refreshToken, access_token);
+
+      const { access_token: newAccessToken, refresh_token: newRefreshToken } =
+        await this.generateTokens(userId, decodedToken.role);
+
+      // Store the new tokens in Redis
+      await this.storeTokensInRedis(userId, newAccessToken, newRefreshToken);
+      return { access_token: newAccessToken, refresh_token: newRefreshToken };
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+      throw new UnauthorizedException('Failed to refresh token');
     }
   }
 }

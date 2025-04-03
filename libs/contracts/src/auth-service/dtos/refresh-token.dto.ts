@@ -1,3 +1,4 @@
 export class AuthRefreshTokenDto {
-  token: string;
+  refreshToken: string;
+  accessToken: string;
 }
