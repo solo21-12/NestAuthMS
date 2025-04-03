@@ -1,4 +1,3 @@
-import { AuthJwtService } from './jwt.service';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
@@ -10,7 +9,11 @@ import {
   USER_SERVICES_PATTERNS,
 } from '@app/contracts';
 import { USER_SERVICE_CONSTANTS } from 'libs/constants';
-import { PasswordHashService, RedisService } from 'libs/services';
+import {
+  AuthJwtService,
+  PasswordHashService,
+  RedisService,
+} from 'libs/services';
 
 @Injectable()
 export class AuthServiceService {
