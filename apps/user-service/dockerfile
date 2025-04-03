@@ -1,0 +1,24 @@
+# Build stage
+FROM node:18-alpine AS builder
+WORKDIR /app
+
+# Copy root package files and install dependencies
+COPY package.json pnpm-lock.yaml ./
+RUN npm install -g pnpm && pnpm install
+
+# Copy entire project and build
+COPY . .
+RUN pnpm run build
+
+# Final stage
+FROM node:18-alpine
+WORKDIR /app
+
+# Copy only the built user-service
+COPY --from=builder /app/dist/apps/user-service .
+
+# Expose the port (adjust if your service listens on a different port)
+EXPOSE 3001
+
+# Start the service
+CMD ["pnpm", "start"]

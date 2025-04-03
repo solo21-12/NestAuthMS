@@ -6,6 +6,7 @@ services:
     restart: always
     ports:
       - '6379:6379'
+
   mongodb:
     image: mongo:latest
     container_name: mongodb
@@ -15,3 +16,44 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: adminpass
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: apps/auth-service/dockerfile
+    container_name: auth-service
+    restart: always
+    depends_on:
+      - redis
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://admin:adminpass@mongodb:27017/auth-db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    ports:
+      - '3001:3001'
+
+  user-service:
+    build:
+      context: .
+      dockerfile: apps/user-service/dockerfile
+    container_name: user-service
+    restart: always
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://admin:adminpass@mongodb:27017/user-db
+    ports:
+      - '3002:3002'
+
+  user-api-gateway:
+    build:
+      context: .
+      dockerfile: apps/user-api-gateway/dockerfile
+    container_name: user-api-gateway
+    restart: always
+    depends_on:
+      - auth-service
+      - user-service
+    ports:
+      - '3000:3000'
