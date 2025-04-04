@@ -14,6 +14,7 @@ import { GuardsModule } from 'libs/guards';
         name: USER_SERVICE_CONSTANTS.NAME,
         transport: Transport.TCP,
         options: {
+          host: 'user-service',
           port: USER_SERVICE_CONSTANTS.PORT,
         },
       },

@@ -6,6 +6,8 @@ services:
     restart: always
     ports:
       - '6379:6379'
+    networks:
+      - my-network
 
   mongodb:
     image: mongo:latest
@@ -16,44 +18,61 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: adminpass
+    networks:
+      - my-network
 
-  auth-service:
+  app-auth-service:
     build:
       context: .
-      dockerfile: apps/auth-service/dockerfile
-    container_name: auth-service
+      dockerfile: dockerfile
+    container_name: app-auth-service
     restart: always
     depends_on:
       - redis
       - mongodb
     environment:
+      - SERVICE_NAME=app-auth-service
       - MONGO_URI=mongodb://admin:adminpass@mongodb:27017/auth-db
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      - REDIS_URL=redis://redis:6379
     ports:
-      - '3001:3001'
+      - '3002:3002'
+    networks:
+      - my-network
 
   user-service:
     build:
       context: .
-      dockerfile: apps/user-service/dockerfile
+      dockerfile: dockerfile
     container_name: user-service
     restart: always
     depends_on:
       - mongodb
     environment:
-      - MONGO_URI=mongodb://admin:adminpass@mongodb:27017/user-db
+      - SERVICE_NAME=user-service
+      - MONGO_URI=mongodb://admin:adminpass@mongodb:27017/auth-db
+      - REDIS_URL=redis://redis:6379
     ports:
-      - '3002:3002'
+      - '3001:3001'
+    networks:
+      - my-network
 
   user-api-gateway:
     build:
       context: .
-      dockerfile: apps/user-api-gateway/dockerfile
+      dockerfile: dockerfile
     container_name: user-api-gateway
     restart: always
     depends_on:
-      - auth-service
+      - app-auth-service
       - user-service
+    environment:
+      - SERVICE_NAME=user-api-gateway
+      - REDIS_URL=redis://redis:6379
     ports:
       - '3000:3000'
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

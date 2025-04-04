@@ -8,8 +8,7 @@ export class RedisService {
 
   constructor(private readonly configService: ConfigService) {
     this.client = createClient({
-      url:
-        this.configService.get<string>('REDIS_URL') || 'redis://localhost:6379',
+      url: this.configService.get<string>('REDIS_URL') || 'redis:6379',
     });
 
     this.client.on('error', (err) => console.error('Redis Error:', err));

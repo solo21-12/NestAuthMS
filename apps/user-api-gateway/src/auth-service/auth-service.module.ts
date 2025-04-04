@@ -12,6 +12,7 @@ import { GuardsModule } from 'libs/guards';
         name: AUTH_SERVICES_CONSTANTS.NAME,
         transport: Transport.TCP,
         options: {
+          host: 'app-auth-service',
           port: AUTH_SERVICES_CONSTANTS.PORT,
         },
       },
