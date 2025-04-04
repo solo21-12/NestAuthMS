@@ -40,8 +40,6 @@ This application consists of:
 - **Communication**: TCP (between Gateway and Microservice)
 - **Validation**: class-validator (DTOs)
 - **Documentation**: Swagger (`/api/docs#/`)
-- **Testing**: Jest
-- **Deployment**: Ready for free platforms (e.g., Render)
 
 ---
 
