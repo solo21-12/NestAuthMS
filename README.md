@@ -1,73 +1,59 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# 🛡️ User Management System (NestJS Gateway + Microservice)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Welcome to the **User Management API** — a robust, modular system built using **NestJS**, **MongoDB**, **Redis**, and microservice architecture with **TCP communication**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Project Overview
 
-## Description
+This application consists of:
+- **API Gateway**: Handles client requests and routes them to the appropriate services.
+- **User Microservice**: Contains business logic and database operations.
+- **MongoDB**: For data persistence.
+- **Redis**: For caching and session/token management.
+- **TCP**: Used for communication between the gateway and microservice.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## ✨ Features
 
-## Installation
+### 🔐 Authentication & Authorization
+- `POST /auth/sign-up` - Register a new user
+- `POST /auth/sign-in` - Log in a user
+- `POST /auth/sign-out` - Log out a user
+- `POST /auth/refresh-token` - Refresh the access token
 
-```bash
-$ pnpm install
-```
+### 👥 User Management
+- `GET /users` - List users (any authenticated user)
+- `POST /users` - Create user (admin only)
+- `PATCH /users/:id` - Update user (admin only)
+- `DELETE /users/:id` - Delete user (admin only)
 
-## Running the app
+> Passwords and roles are **not** shown in the user listing.
 
-```bash
-# development
-$ pnpm run start
+## 🧠 Role-Based Access Control (RBAC)
+- **Admin**: Can create, update, delete users.
+- **User**: Can only view user listings.
+- Access enforced using NestJS **Guards**.
 
-# watch mode
-$ pnpm run start:dev
+## 📦 Tech Stack
 
-# production mode
-$ pnpm run start:prod
-```
+- **Framework**: [NestJS](https://nestjs.com/)
+- **Database**: MongoDB
+- **Cache**: Redis
+- **Communication**: TCP (between Gateway and Microservice)
+- **Validation**: class-validator (DTOs)
+- **Documentation**: Swagger (`/api/docs#/`)
+- **Testing**: Jest
+- **Deployment**: Ready for free platforms (e.g., Render)
 
-## Test
+---
 
-```bash
-# unit tests
-$ pnpm run test
+## 🛠️ Getting Started
 
-# e2e tests
-$ pnpm run test:e2e
+### Prerequisites
+- Docker & Docker Compose
+- pnpm (`npm install -g pnpm`)
 
-# test coverage
-$ pnpm run test:cov
-```
+### 📦 Setup Instructions
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/solo21-12/NestAuthMS
+   cd user-management-system
