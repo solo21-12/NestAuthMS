@@ -8,7 +8,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthServiceService } from './auth-service.service';
-import { AuthRto, SignInDto, SignUpDto } from '@app/contracts';
+import {
+  AuthRto,
+  RefreshTokenRequestDto,
+  SignInDto,
+  SignUpDto,
+} from '@app/contracts';
 import { JwtAuthGuard } from 'libs/guards';
 import { ERROR_MESSAGES } from 'libs/constants';
 import {
@@ -83,11 +88,7 @@ export class AuthServiceController {
   async refreshToken(
     @Headers('authorization') authHeader: string,
     @Body()
-    {
-      refresh_token,
-    }: {
-      refresh_token: string;
-    },
+    { refresh_token }: RefreshTokenRequestDto,
   ) {
     const accessToken = this.extractTokenFromHeader(authHeader);
 

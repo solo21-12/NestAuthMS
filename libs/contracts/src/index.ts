@@ -1,4 +1,7 @@
-export { AuthRefreshTokenDto } from './auth-service/dtos/refresh-token.dto';
+export {
+  AuthRefreshTokenDto,
+  RefreshTokenRequestDto,
+} from './auth-service/dtos/refresh-token.dto';
 export { SignUpDto } from './auth-service/dtos/sign-up.dto';
 export { SignInDto } from './auth-service/dtos/sign-in.dto';
 export { AUTH_SERVICES_PATTERNS } from './auth-service/auth-service.patterns';
