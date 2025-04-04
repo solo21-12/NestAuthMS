@@ -10,6 +10,7 @@ export {
   CreateUserRto,
   GetUserRto,
   UpdateUserRto,
+  DeleteUserRto,
 } from './user-service/rtos/user-service.rto';
 
 export { USER_SERVICES_PATTERNS } from './user-service/user-service.patterns';

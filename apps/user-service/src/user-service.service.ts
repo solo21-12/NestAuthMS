@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { UserServiceRepository } from './user-service.repository';
-import { UserDto, CreateUserDto } from '@app/contracts';
+import { UserDto, CreateUserDto, DeleteUserRto } from '@app/contracts';
 import { UserDocument } from './schemas/user.schema';
+import { UserRole } from 'libs/constants';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class UserServiceService {
@@ -18,6 +20,10 @@ export class UserServiceService {
   }
 
   async create(userDto: CreateUserDto): Promise<UserDto> {
+    const currentUsers = await this.findAll();
+    if (currentUsers.length == 0) {
+      userDto.role = UserRole.ADMIN;
+    }
     const user = await this.userServiceRepository.create(userDto);
     return this.userToDto(user);
   }
@@ -48,9 +54,16 @@ export class UserServiceService {
     return this.userToDto(updatedUser);
   }
 
-  async delete(id: string): Promise<UserDto | null> {
+  async delete(id: string): Promise<DeleteUserRto | null> {
     const deletedUser = await this.userServiceRepository.delete(id);
-    if (!deletedUser) return null;
-    return this.userToDto(deletedUser);
+    if (!deletedUser) {
+      throw new RpcException({
+        status: 404,
+        message: 'User not found',
+      });
+    }
+    return {
+      message: 'User deleted successfully',
+    };
   }
 }

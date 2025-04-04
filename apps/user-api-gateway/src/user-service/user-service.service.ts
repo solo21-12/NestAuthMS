@@ -4,8 +4,10 @@ import {
   USER_SERVICES_PATTERNS,
   GetUserRto,
   UpdateUserRto,
+  UpdateUserDto,
 } from '@app/contracts';
 import {
+  BadRequestException,
   ConflictException,
   Inject,
   Injectable,
@@ -35,10 +37,18 @@ export class UserServiceService {
     };
   }
 
+  private userDtoToGetRot(user: any): GetUserRto {
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    };
+  }
+
   async findAll(): Promise<GetUserRto[]> {
     const users$ = this.userClient.send(USER_SERVICES_PATTERNS.FIND_ALL, {});
     const users = await lastValueFrom(users$);
-    return users.map((user: any) => this.userDtoToRto(user));
+    return users.map((user: any) => this.userDtoToGetRot(user));
   }
 
   async create(createUserDto: CreateUserDto): Promise<CreateUserRto> {
@@ -65,12 +75,12 @@ export class UserServiceService {
     if (!user) {
       throw new NotFoundException(ERROR_MESSAGES.USER_NOT_FOUND);
     }
-    return this.userDtoToRto(user);
+    return this.userDtoToGetRot(user);
   }
 
   async update(
     id: string,
-    updateUserDto: CreateUserDto,
+    updateUserDto: UpdateUserDto,
   ): Promise<UpdateUserRto> {
     // Check if user exists
     const existingUser$ = this.userClient.send(
@@ -90,7 +100,16 @@ export class UserServiceService {
   }
 
   async delete(id: string): Promise<void> {
-    const delete$ = this.userClient.send(USER_SERVICES_PATTERNS.REMOVE, id);
-    await lastValueFrom(delete$);
+    try {
+      const delete$ = this.userClient.send(USER_SERVICES_PATTERNS.REMOVE, id);
+      return await lastValueFrom(delete$).catch((error) => {
+        console.error('API Gateway Sign-up Error:', error);
+
+        throw new BadRequestException(error.message || 'Sign-up failed');
+      });
+    } catch (error) {
+      console.error('API Gateway delete user Error:', error);
+      throw new BadRequestException(error.message || 'delete user failed');
+    }
   }
 }

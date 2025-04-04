@@ -19,3 +19,7 @@ export class GetUserRto {
   name: string;
   email: string;
 }
+
+export class DeleteUserRto {
+  message: string;
+}

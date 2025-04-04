@@ -10,7 +10,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { UserServiceService } from './user-service.service';
-import { CreateUserDto } from '@app/contracts';
+import { CreateUserDto, UpdateUserDto } from '@app/contracts';
 import { AdminGuard, JwtAuthGuard } from 'libs/guards';
 
 @Controller('users')
@@ -38,7 +38,7 @@ export class UserServiceController {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body(new ValidationPipe()) createUserDto: CreateUserDto,
+    @Body(new ValidationPipe()) createUserDto: UpdateUserDto,
   ) {
     return this.userService.update(id, createUserDto);
   }
