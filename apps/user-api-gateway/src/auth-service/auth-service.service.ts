@@ -24,12 +24,9 @@ export class AuthServiceService {
       );
 
       return await lastValueFrom(response$).catch((error) => {
-        console.error('API Gateway Sign-up Error:', error);
-
         throw new BadRequestException(error.message || 'Sign-up failed');
       });
     } catch (error) {
-      console.error('API Gateway Sign-up Error:', error);
       throw new BadRequestException(error.message || 'Sign-up failed');
     }
   }
@@ -42,12 +39,9 @@ export class AuthServiceService {
       );
 
       return await lastValueFrom(response$).catch((error) => {
-        console.error('API Gateway Sign-in Error:', error);
-
         throw new BadRequestException(error.message || 'Sign-in failed');
       });
     } catch (error) {
-      console.error('API Gateway Sign-in Error:', error);
       throw new BadRequestException(error.message || 'Sign-in failed');
     }
   }
@@ -62,7 +56,6 @@ export class AuthServiceService {
       );
       return response;
     } catch (error) {
-      console.error('API Gateway Sign-out Error:', error);
       throw new BadRequestException(error.message || 'Sign-out failed');
     }
   }
@@ -79,12 +72,9 @@ export class AuthServiceService {
       );
 
       return await lastValueFrom(response$).catch((error) => {
-        console.error('API Gateway Refresh Token Error:', error);
-
         throw new BadRequestException(error.message || 'Refresh token failed');
       });
     } catch (error) {
-      console.error('API Gateway Refresh Token Error:', error);
       throw new BadRequestException(error.message || 'Refresh token failed');
     }
   }

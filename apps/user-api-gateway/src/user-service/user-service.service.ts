@@ -103,12 +103,9 @@ export class UserServiceService {
     try {
       const delete$ = this.userClient.send(USER_SERVICES_PATTERNS.REMOVE, id);
       return await lastValueFrom(delete$).catch((error) => {
-        console.error('API Gateway Sign-up Error:', error);
-
         throw new BadRequestException(error.message || 'Sign-up failed');
       });
     } catch (error) {
-      console.error('API Gateway delete user Error:', error);
       throw new BadRequestException(error.message || 'delete user failed');
     }
   }

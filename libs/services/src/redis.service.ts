@@ -29,7 +29,6 @@ export class RedisService {
   }
 
   async deleteKey(key: string): Promise<void> {
-    console.log(`Deleting key: ${key}`);
     await this.client.del(key);
   }
 }

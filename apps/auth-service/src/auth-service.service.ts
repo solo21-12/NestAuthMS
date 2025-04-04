@@ -35,7 +35,6 @@ export class AuthServiceService {
 
       return existingUser || null;
     } catch (error) {
-      console.error('Error fetching user:', error);
       throw new RpcException({
         statusCode: 500,
         message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
@@ -55,7 +54,6 @@ export class AuthServiceService {
       );
       return { access_token, refresh_token };
     } catch (error) {
-      console.error('Error generating tokens:', error);
       throw new RpcException({
         statusCode: 500,
         message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
@@ -68,7 +66,6 @@ export class AuthServiceService {
       const existingUser = await this.getUser(email);
       return existingUser !== null;
     } catch (error) {
-      console.error('Error checking user existence:', error);
       throw new RpcException({
         statusCode: 500,
         message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
@@ -93,7 +90,6 @@ export class AuthServiceService {
         7 * 24 * 60 * 60,
       );
     } catch (error) {
-      console.error('Error storing tokens in Redis:', error);
       throw new RpcException({
         statusCode: 500,
         message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
@@ -166,14 +162,14 @@ export class AuthServiceService {
         refresh_token,
       );
 
-      return {
-        access_token,
-        refresh_token,
-      };
+      return { access_token, refresh_token };
     } catch (error) {
-      console.error('Sign-up error:', error);
+      if (error instanceof RpcException) {
+        throw error;
+      }
+
       throw new RpcException({
-        statusCode: error?.statusCode || 400,
+        statusCode: 400,
         message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
       });
     }
@@ -243,8 +239,6 @@ export class AuthServiceService {
 
       return { message: 'Sign-out successful' };
     } catch (error) {
-      console.error('Sign-out error:', error);
-
       throw new RpcException({
         statusCode: 400,
         message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
@@ -280,7 +274,6 @@ export class AuthServiceService {
       await this.storeTokensInRedis(userId, newAccessToken, newRefreshToken);
       return { access_token: newAccessToken, refresh_token: newRefreshToken };
     } catch (error) {
-      console.error('Error refreshing token:', error);
       throw new RpcException({
         statusCode: 400,
         message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
